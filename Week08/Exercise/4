@@ -1,0 +1,24 @@
+.data
+arr:    .word 64, 25, 12, 22, 11, 3, 12, 55, 4, 28 
+
+.text
+la x12, arr # x12 = starting address of arr
+addi x13, x0, 10 # x13 = n = 10
+lw x15, 0(x12) # x15 = min_val = arr[0]
+addi x14, x0, 0 # x14 = i = 0
+
+start_loop:
+bge x14, x13, exit_loop  # if i >= n go to exit_loop
+slli x16, x14, 2 # x16 = i * 4 (offset in bytes)
+add x17, x12, x16 # x17 = address of arr[i]
+lw x18, 0(x17) # x18 = arr[i]
+blt x18, x15, update_min  # if arr[i] < min_val, update min_val
+addi x14, x14, 1 # i++
+j start_loop # Repeat the loop
+
+update_min:
+mv x15, x18 # min_val = arr[i]
+addi x14, x14, 1 # i++
+j start_loop # Repeat the loop
+
+exit_loop:
