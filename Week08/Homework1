@@ -1,0 +1,58 @@
+.data
+arr : .word 64, 25, 12, 22, 11, 3, 12, 55, 4, 28
+
+.text
+la x12, arr # laod starting address of arr to x12
+addi x13, x0, 10 # n = 10
+addi x14, x0, 0 # i = 0
+addi x18, x13 ,-1 # x18 = n-1
+start_loop_i :
+bge x14, x18,  exit_loop_i # if i >= n-1 exit_loop_i 
+add x17, x14, x0 # min_idx = i
+addi x15, x14, 1 # j = i + 1
+
+start_loop_j :
+bge x15, x13, exit_loop_j # if j >= n exit_loop_j 
+
+#x20 = arr[j]
+slli x19, x15, 2 # x19 = j * 4 (word size in bytes)
+add x19, x19, x12 #x19 = address of arr[j]
+lw x20, 0(x19)  #Load arr[j] into x20
+
+# x22 = arr[min_idx]
+slli x21, x17, 2 # x21 = min_idx * 4
+add x21, x21, x12 # x21 = address of arr[min_idx]
+lw x22, 0(x21) # Load arr[min_idx] into x22
+
+bge x20, x22, j++   # if arr[j] >= arr[min_idx] start loop j agian
+add x17, x15, x0 # min_idx = j
+j j++
+
+j++:
+addi x15, x15, 1 # j++
+j start_loop_j
+
+exit_loop_j :
+beq x17, x14, i++ # if min_idx == i go i++
+
+# x22 = arr[min_idx]
+# temp (x16) = arr[min_idx] 
+slli x21, x17, 2 # x21 = min_idx * 4
+add x21, x21, x12 # x21 = address of arr[min_idx]
+lw x22, 0(x21) # Load arr[min_idx]into x22
+lw x16, 0(x21) # Load arr[min_idx] into x16 (temp)
+
+# x24 = arr[i]
+slli x23, x14, 2 # x23 = i * 4
+add x23, x23, x12  # x23 = address of arr[i]
+lw x24, 0(x23) # Load arr[i] into x24
+
+sw x22, 0(x24) # arr[min_idx] = arr[i]
+
+sw x21, 0(x16) # arr[i] = temp;
+
+i++ :
+addi x14, x14, 1 # i++
+j start_loop_i # start loop i again
+
+exit_loop_i :
