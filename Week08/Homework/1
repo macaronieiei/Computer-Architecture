@@ -35,19 +35,19 @@ j start_loop_j
 exit_loop_j :
 beq x17, x14, i++     # if min_idx == i go i++
 
-# x22 = arr[min_idx]
 # temp (x16) = arr[min_idx] 
 slli x21, x17, 2      # x21 = min_idx * 4
 add x21, x21, x12     # x21 = address of arr[min_idx]
-lw x22, 0(x21)        # Load arr[min_idx]into x22
 lw x16, 0(x21)        # Load arr[min_idx] into x16 (temp)
 
-# x24 = arr[i]
-slli x23, x14, 2      # x23 = i * 4
-add x23, x23, x12     # x23 = address of arr[i]
-lw x24, 0(x23)        # Load arr[i] into x24
-sw x22, 0(x24)        # arr[min_idx] = arr[i]
-sw x21, 0(x16)        # arr[i] = temp;
+# x23 = arr[i]
+slli x22, x14, 2      # x22 = i * 4
+add x22, x22, x12     # x22 = address of arr[i]
+lw x23, 0(x22)        # Load arr[i] into x23
+
+# Perform the swap
+sw x23, 0(x21)        # arr[min_idx] = arr[i]
+sw x16, 0(x22)        # arr[i] = temp
 
 i++ :
 addi x14, x14, 1      # i++
