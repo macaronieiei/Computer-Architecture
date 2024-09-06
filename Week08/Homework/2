@@ -6,13 +6,13 @@ la x12, sorted_arr          # load starting address of sorted_arr to x12
 addi x18, x0, 15            # arr_size = 15
 addi x13, x0, 0             # left = 0
 addi x14, x18, -1           # right = srr_size-1
-addi x19, x0, 102           # key = 89
+addi x19, x0, 102           # key = 102
 addi x17, x0, 0             # num_step = 0 
 
-#binary search
 addi x16, x0, -1            # result = -1
+addi x17, x0, 0             # num_step = 0
 
-binary_search :
+binary_search:
 bgt x13, x14, exit_binary_search         # if left > right go to exit
 addi x17, x17, 1            # num_step++
 
@@ -22,28 +22,24 @@ srai x15, x15, 1            # x15 = (right - left) >> 1
 add x15, x15, x13           # x15 = left + ((right - left) >> 1)
 
 # x24 = sorted_arr[mid]
-slli x23, x15, 2            # x23 = mid * 4
+slli x23, x15, 2            # x23 = mid * 4 (assuming int size is 4 bytes)
 add x23, x23, x12           # x23 = address of sorted_arr[mid]
-lw x24, 0(x23)              # load sorted_arr[mid] into x 24
+lw x24, 0(x23)              # load sorted_arr[mid] into x24
 
-# if (sorted_arr[mid] == key)
-beq x24, x19, sorted_arr_mid_equal_key            # if sorted_arr[mid] == key (x19) go to sorted_arr[mid]_equal_key 
-
-# if sorted_arr[mid] >= key (x19)
+beq x24, x19, found        # if sorted_arr[mid] == key (x19) go to found
 bge x24, x19, else          # if sorted_arr[mid] >= key (x19) go to else
-
 addi x13, x15, 1            # left = mid + 1
 j binary_search
 
-sorted_arr_mid_equal_key :
-add x16, x15, x0            # result = mid
-j exit_binary_search
-
-else :
+else:
 addi x14, x15, -1           # right = mid - 1
 j binary_search
 
-exit_binary_search :
+found:
+add x16, x15, x0            # result = mid
+j exit_binary_search
+
+exit_binary_search:
 
 # sequential_search
 addi x21, x0, 0             # num_step_2 = 0
