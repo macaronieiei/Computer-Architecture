@@ -45,7 +45,6 @@ slli x22, x14, 2      # x22 = i * 4
 add x22, x22, x12     # x22 = address of arr[i]
 lw x23, 0(x22)        # Load arr[i] into x23
 
-# Perform the swap
 sw x23, 0(x21)        # arr[min_idx] = arr[i]
 sw x16, 0(x22)        # arr[i] = temp
 
